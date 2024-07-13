@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const REQUEST_INTERVAL = null; // Disable interval for single fetch
 
@@ -19,7 +20,7 @@ const shuffleArray = (array) => {
   return array;
 };
 
-export default function TestPage(props) {
+function TestPageContent() {
   const searchParams = useSearchParams();
   const cat = searchParams.get("naw");
   const name = searchParams.get("name");
@@ -65,7 +66,7 @@ export default function TestPage(props) {
     };
 
     fetchData(); // Fetch data on component mount
-  }, []); // Empty dependency array for single fetch only
+  }, [API_URL]); // Add API_URL as dependency
 
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
@@ -189,5 +190,13 @@ export default function TestPage(props) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function TestPage(props) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TestPageContent {...props} />
+    </Suspense>
   );
 }
